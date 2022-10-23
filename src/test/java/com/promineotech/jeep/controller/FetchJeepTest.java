@@ -44,15 +44,21 @@ class FetchJeepTest {
 	void testThatJeepsAreReturnedWhenAValidModelAndTrimAreSupplied() {
 		
 		JeepModel model = JeepModel.WRANGLER;
-		String trim = "sport";
-		String uri = String.format("http://localhost:%d/jeeps?model=%s&trim=%s", serverPort, model, trim);
+		String trim = "Sport";
+		String uri = 
+				String.format("http://localhost:%d/jeeps?model=%s&trim=%s", serverPort, model, trim);
 		
-		ResponseEntity<List<Jeep>> response = restTemplate.exchange(uri, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+		ResponseEntity<List<Jeep>> response = restTemplate.exchange(uri, 
+				HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
 		
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		
+		List<Jeep> actual = response.getBody();
 		List<Jeep> expected = buildExpected();
-		assertThat(response.getBody()).isEqualTo(expected);
+		
+		actual.forEach(jeep -> jeep.setModelPK(null));
+		
+		assertThat(actual).isEqualTo(expected);
 		
 		}
 	
