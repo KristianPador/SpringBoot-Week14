@@ -87,5 +87,23 @@ class FetchJeepTest {
 		return list;
 		
 	}
+	
+	@Test
+	void testThatAnErrorMessageIsReturnedWhenAnInvalidModelAndTrimAreSupplied() {
+		// Given: a valid model, trim and URI
+		JeepModel model = JeepModel.WRANGLER;
+		String trim = "Invalid Value";
+		String uri = 
+				String.format("http://localhost:%d/jeeps?model=%s&trim=%s", serverPort, model, trim);
+		
+		// When: a connection is made to the URI
+		ResponseEntity<?> response = restTemplate.exchange(uri, 
+				HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+		
+		// Then: a not found (404) status code is returned
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	
+		
+		}
 
 }
